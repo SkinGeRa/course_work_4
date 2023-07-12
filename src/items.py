@@ -1,4 +1,4 @@
-from src.classes import HeadHunterAPI, SuperJobAPI
+from src.classes import HeadHunterAPI, SuperJobAPI, Vacancy, JSONSaver
 
 
 # Создание экземпляра класса для работы с API сайтов с вакансиями
