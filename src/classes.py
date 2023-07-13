@@ -10,8 +10,8 @@ class API:
 
 class HeadHunterAPI(API):
 
-    def __init__(self, keyword):
-        self.keyword = keyword
+    def __init__(self):
+        self.keyword = input()
         self.pages = input()
 
     def get_request(self):
@@ -25,25 +25,22 @@ class HeadHunterAPI(API):
         }
 
         response = requests.get(url, params=params).json()
-        # return json.dumps(response, indent=2, ensure_ascii=False)
         return response
 
     def get_vacancies(self):
-        vacancies = []
+        vacancies_hh = []
         item = self.get_request()
-        for index in range(10):
-            print(item['items'][index]["name"])
-            print(item['items'][index]["salary"])
-            print(item['items'][index]["alternate_url"])
-            print(item['items'][index]["snippet"])
-
+        for index in range(1):
+            vacancies_hh.append(dict(name=item['items'][index]["name"], salary=item['items'][index]["salary"],
+                                     url=item['items'][index]["alternate_url"], desk=item['items'][index]["snippet"]))
+        return vacancies_hh
 
 
 class SuperJobAPI(API):
 
-    def __init__(self, keyword=input(), pages=input()):
-        self.keyword = keyword
-        self.pages = pages
+    def __init__(self):
+        self.keyword = input()
+        self.pages = input()
 
     def get_request(self):
         url = "https://api.superjob.ru/2.0/vacancies"
@@ -60,23 +57,19 @@ class SuperJobAPI(API):
         }
 
         response = requests.get(url, params=params, headers=headers).json()
-        return json.dumps(response, indent=2, ensure_ascii=False)
+        return response
 
     def get_vacancies(self):
-        vacancies = []
-        for vacancy in self.get_request():
-            # vacancies.append({
-            #     vacancy,
-                # "title": vacancy["name"],
-                # "url": vacancy["alternate_url"],
-                # "description": vacancy["snippet"]["requirement"]
-            # })
-        # print(vacancies)
-            print(vacancy["objects"])
+        vacancies_sj = []
+        item = self.get_request()
+        for index in range(1):
+            vacancies_sj.append(
+                dict(name=item['objects'][index]["profession"], salary=item['objects'][index]["payment_from"],
+                     url=item['objects'][index]["link"], desk=item['objects'][index]["candidat"]))
+        return vacancies_sj
 
 
-i = HeadHunterAPI("python")
-# for i in i.get_request():
+i = SuperJobAPI()
 print(i.get_vacancies())
 
 
@@ -106,4 +99,3 @@ class JSONSaver(JSON):
 
     def save_vacancy(self):
         pass
-
