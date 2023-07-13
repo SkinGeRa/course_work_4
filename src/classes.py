@@ -10,49 +10,47 @@ class API:
 
 class HeadHunterAPI(API):
 
-    def __init__(self, keyword, pages):
+    def __init__(self, keyword):
         self.keyword = keyword
-        self.pages = pages
+        self.pages = input()
 
     def get_request(self):
-        for page in self.pages:
-            url = "https://api.hh.ru/vacancies"
-            params = {
-                "per_page": 100,
-                "page": page,
-                "text": self.keyword,
-                "archive": False
-            }
+        url = "https://api.hh.ru/vacancies"
+        params = {
+            "per_page": 100,
+            "page": self.pages,
+            "text": self.keyword,
+            "archive": False,
+            "only_with_salary": True
+        }
 
-            response = requests.get(url, params=params).json()
-            # print(json.dumps(response, indent=2, ensure_ascii=False))
-            # return json.dumps(response, indent=2, ensure_ascii=False)
-            return response
+        response = requests.get(url, params=params).json()
+        # return json.dumps(response, indent=2, ensure_ascii=False)
+        return response
 
     def get_vacancies(self):
         vacancies = []
-        for vacancy in self.get_request():
-            vacancies.append({
-                "salary": vacancy,
-                # "title": vacancy["name"],
-                # "url": vacancy["alternate_url"],
-                # "description": vacancy["snippet"]["requirement"]
-            })
-        print(vacancies)
+        item = self.get_request()
+        for index in range(10):
+            print(item['items'][index]["name"])
+            print(item['items'][index]["salary"])
+            print(item['items'][index]["alternate_url"])
+            print(item['items'][index]["snippet"])
+
 
 
 class SuperJobAPI(API):
 
-    def __init__(self):
-        pass
+    def __init__(self, keyword=input(), pages=input()):
+        self.keyword = keyword
+        self.pages = pages
 
-    @staticmethod
-    def get_request(keyword="python"):
+    def get_request(self):
         url = "https://api.superjob.ru/2.0/vacancies"
         params = {
             "count": 100,
             "page": 0,
-            "keyword": keyword,
+            "keyword": self.keyword,
             "archive": False
         }
 
@@ -62,10 +60,23 @@ class SuperJobAPI(API):
         }
 
         response = requests.get(url, params=params, headers=headers).json()
-        print(json.dumps(response, indent=2, ensure_ascii=False))
+        return json.dumps(response, indent=2, ensure_ascii=False)
+
+    def get_vacancies(self):
+        vacancies = []
+        for vacancy in self.get_request():
+            # vacancies.append({
+            #     vacancy,
+                # "title": vacancy["name"],
+                # "url": vacancy["alternate_url"],
+                # "description": vacancy["snippet"]["requirement"]
+            # })
+        # print(vacancies)
+            print(vacancy["objects"])
 
 
-i = HeadHunterAPI("python", "3")
+i = HeadHunterAPI("python")
+# for i in i.get_request():
 print(i.get_vacancies())
 
 
